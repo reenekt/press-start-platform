@@ -7,7 +7,7 @@
             <h1>{{ $app->name }}</h1>
             <h4><a href="{{ $app->url }}">{{ $app->url }}</a></h4>
             <h5>
-                <cms-app-status url="{{ $app->url }}"></cms-app-status>
+                <cms-app-status url="{{ $app->url }}" app-key="{{ $app->app_key }}"></cms-app-status>
             </h5>
         </div>
     </div>
@@ -24,9 +24,9 @@
                         </h2>
                     </div>
 
-                    <div id="plugins_content" class="collapse" aria-labelledby="plugins" data-parent="#accordionExample">
+                    <div id="plugins_content" class="collapse show" aria-labelledby="plugins" data-parent="#accordionExample">
                         <div class="card-body">
-                            <cms-app-plugin-list cms-app-url="{{ $app->url }}"></cms-app-plugin-list>
+                            <cms-app-plugin-list cms-app-url="{{ $app->url }}" app-key="{{ $app->app_key }}"></cms-app-plugin-list>
                         </div>
                     </div>
                 </div>
@@ -41,7 +41,7 @@
                     </div>
                     <div id="themes_content" class="collapse" aria-labelledby="themes" data-parent="#accordionExample">
                         <div class="card-body">
-                            Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+                            <work-in-progress></work-in-progress>
                         </div>
                     </div>
                 </div>

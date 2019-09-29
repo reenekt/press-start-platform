@@ -13,7 +13,7 @@
                     <a class="nav-link rounded-0 py-3" href="{{ route('cms-plugins.index') }}">Плагины</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link rounded-0 py-3" href="{{ route('dashboard') }}">Темы</a>
+                    <a class="nav-link rounded-0 py-3" href="{{ route('work-in-progress') }}">Темы</a>
                 </li>
             </ul>
         </div>

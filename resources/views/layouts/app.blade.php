@@ -74,11 +74,11 @@
 
         <div class="container-fluid @if(\Illuminate\Support\Facades\Auth::check()) d-flex @endif px-0">
             @if(\Illuminate\Support\Facades\Auth::check())
-            <div class="col-3 px-0 position-sticky" style="height: calc(100vh - 3.5rem); padding-top: 0; border-right: 1px solid rgba(0, 0, 0, 0.1);">
+            <div class="col-2 px-0 position-sticky" style="height: calc(100vh - 3.5rem); padding-top: 0; border-right: 1px solid rgba(0, 0, 0, 0.1);">
                 @include('layouts.sidebar')
             </div>
             @endif
-            <main class="@if(\Illuminate\Support\Facades\Auth::check()) col-9 @endif py-3">
+            <main class="@if(\Illuminate\Support\Facades\Auth::check()) col-10 @endif py-3">
                 @yield('content')
             </main>
         </div>

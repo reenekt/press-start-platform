@@ -2,7 +2,13 @@
     <div class="row">
         <div v-if="loading">Загрузка...</div>
 
-        <cms-app-plugin-card v-for="(plugin, index) in plugins" :key="'plugin_card_' + index" :name="plugin.short_name" :class-name="plugin.plugin" :manager-class="plugin.type" :invalid="plugin.invalid"></cms-app-plugin-card>
+        <cms-app-plugin-card v-for="(plugin, index) in plugins" :key="'plugin_card_' + index"
+                             :scheme="plugin.scheme"
+                             :invalid="plugin.invalid"
+                             :app-key="appKey"
+                             :cms-app-url="cmsAppUrl"
+                             @change="retry"
+        ></cms-app-plugin-card>
 
         <div v-if="errorStatus">
         <span>
@@ -33,7 +39,11 @@
             cmsAppUrl: {
                 required: true,
                 type: String
-            }
+            },
+            appKey: {
+                required: true,
+                type: String
+            },
         },
         mounted () {
             this.loadData();
@@ -47,7 +57,11 @@
             },
             loadData () {
                 let url = this.cmsAppUrl.replace(/\/$/, "");
-                axios.get(url + this.apiPath)
+                axios.get(url + this.apiPath, {
+                    params: {
+                        key: this.appKey
+                    },
+                })
                     .then(response => {
                         if (response.data) {
                             this.plugins = response.data

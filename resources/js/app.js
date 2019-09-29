@@ -7,6 +7,8 @@
 require('./bootstrap');
 
 require('./helpers/sidebar');
+require('./helpers/popover');
+require('./helpers/bs-custom-file-input');
 
 window.Vue = require('vue');
 
@@ -24,6 +26,9 @@ window.Vue = require('vue');
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 Vue.component('cms-app-status', require('./components/CmsAppStatus.vue').default);
 Vue.component('cms-app-plugin-list', require('./components/CmsAppPluginList.vue').default);
+Vue.component('work-in-progress', require('./components/WorkInProgress.vue').default);
+Vue.component('plugin-zip-uploader', require('./components/PluginZipUploader.vue').default);
+Vue.component('install-plugin-card', require('./components/InstallPluginCard.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

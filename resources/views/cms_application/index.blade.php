@@ -30,7 +30,7 @@
                             </a>
                         </td>
                         <td>
-                            <cms-app-status url="{{ $app->url }}"></cms-app-status>
+                            <cms-app-status url="{{ $app->url }}" app-key="{{ $app->app_key }}"></cms-app-status>
                         </td>
                         <td>
                             <a class="btn btn-primary" href="{{ route('cms-applications.show', ['cms_application' => $app->id]) }}">Подробнее</a>
@@ -46,7 +46,7 @@
                 @endforeach
                 @if(count($apps) == 0)
                     <tr>
-                        <td colspan="4" class="text-center">Нет данных</td>
+                        <td colspan="5" class="text-center">Нет данных</td>
                     </tr>
                 @endif
             </table>

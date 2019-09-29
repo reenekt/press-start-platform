@@ -26,6 +26,17 @@
                     <input value="{{ $app->url }}" type="url" class="form-control" id="url" name="url" aria-describedby="urlHelp" placeholder="http://my-best-cms.net">
                     <small id="urlHelp" class="form-text text-muted">URL (домен) приложения.</small>
                 </div>
+                <div class="form-group">
+                    <label for="app_key">Ключ приложения</label>
+                    <input value="{{ $app->app_key }}" type="text" class="form-control" id="app_key" name="app_key" aria-describedby="app_keyHelp" placeholder="Любая последовательность символов">
+                    <small id="app_keyHelp" class="form-text text-muted">
+                        Ключ должен совпадать с ключом, указанным в самой CMS.
+                        <button type="button" class="btn btn-sm btn-link" data-container="body" data-toggle="popover" data-placement="top"
+                                data-content="Ключ указывается в .env файле в параметре PLATFORM_APP_KEY">
+                            Подробнее
+                        </button>
+                    </small>
+                </div>
                 <button type="submit" class="btn btn-primary">Сохранить</button>
             </form>
         </div>

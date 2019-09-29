@@ -4,10 +4,13 @@ namespace App\Http\Controllers;
 
 use App\CmsApplication;
 use App\CmsPlugin;
+use App\Library\PluginSystem\PluginScheme;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
+use ZipArchive;
 
 class CmsPluginController extends Controller
 {
@@ -23,7 +26,13 @@ class CmsPluginController extends Controller
      */
     public function index()
     {
-        $plugins = CmsPlugin::all();
+        $sub_query = CmsPlugin::groupBy('vendor')->groupBy('package')->selectRaw('vendor, package, MAX(version) as last_version');
+        $plugins = CmsPlugin::joinSub($sub_query, 'sub_query', function ($join) {
+            $join->on('cms_plugins.vendor', '=', 'sub_query.vendor');
+            $join->on('cms_plugins.package', '=', 'sub_query.package');
+            $join->on('cms_plugins.version', '=', 'sub_query.last_version');
+        })->get();
+
         return view('cms_plugin.index', [
             'plugins' => $plugins
         ]);
@@ -31,7 +40,7 @@ class CmsPluginController extends Controller
 
     public function download(CmsPlugin $cmsPlugin)
     {
-        return Storage::disk('public')->download("plugins/$cmsPlugin->vendor/$cmsPlugin->package/$cmsPlugin->short_name.zip");
+        return Storage::disk('public')->download("plugins/{$cmsPlugin->vendor}/{$cmsPlugin->package}/{$cmsPlugin->version}/{$cmsPlugin->package}.zip");
     }
 
     /**
@@ -39,9 +48,9 @@ class CmsPluginController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function upload()
     {
-//        return view('cms_plugin.create');
+        return view('cms_plugin.upload');
     }
 
     /**
@@ -52,28 +61,56 @@ class CmsPluginController extends Controller
      */
     public function store(Request $request)
     {
-//        $validatedData = $request->validate([
-//            'name' => [
-//                'required',
-//                'string',
-//                Rule::unique('cms_plugins')->where('user_id', $request->user()->id),
-//                'max:255',
-//            ],
-//            'url' => [
-//                'required',
-//                'url',
-//                Rule::unique('cms_plugins')->where('user_id', $request->user()->id),
-//                'max:255',
-//            ],
-//        ]);
-//
-//        $cmsApplication = new CmsApplication();
-//        $cmsApplication->fill($validatedData);
-//        $cmsApplication->user_id = $request->user()->id;
-//
-//        $cmsApplication->save();
-//
-//        return redirect()->route('cms-applications.index');
+        if ($request->file('file')->getMimeType() == 'application/zip') {
+            $zip = new ZipArchive();
+            $path = $request->file('file')->store('temp/plugins');
+            if ($zip->open(storage_path('app/' . $path)) === true) {
+                $scheme = new PluginScheme($zip->getFromName('start.plugin.json'));
+                $scheme->package = explode('.', $request->file('file')->getClientOriginalName())[0];
+                $scheme->vendor = $request->user()->vendor_name;
+                $zip->close();
+                Storage::delete($path);
+
+                $saved = false;
+                $errorMessage = '';
+                $sameRecordExists = CmsPlugin::where([
+                    ['vendor', $scheme->vendor],
+                    ['package', $scheme->package],
+                    ['version', $scheme->version],
+                ])->count() > 0;
+                if ($scheme->validate() && !$sameRecordExists) {
+                    $fileName = $request->file('file')->getClientOriginalName();
+                    $path = $request->file('file')->storeAs("public/plugins/{$scheme->vendor}/{$scheme->package}/{$scheme->version}", $fileName);
+                    if ($path === false) {
+                        //TODO add logging
+                    } else {
+                        $plugin = new CmsPlugin();
+                        $plugin->vendor = $scheme->vendor;
+                        $plugin->package = $scheme->package;
+                        $plugin->version = $scheme->version;
+                        $saved = $plugin->save();
+                    }
+                } else {
+                   if ($sameRecordExists) {
+                       $errorMessage = 'Такая версия плагина уже существует';
+                   }
+                   if (!$scheme->validate()) {
+                       $errorMessage = 'Схема плагина имеет ошибки';
+                   }
+                }
+                return collect([
+                    'scheme' => $scheme,
+                    'valid' => $scheme->validate(),
+                    'package' => $scheme->package,
+                    'vendor' => $scheme->vendor,
+                    'version' => $scheme->version,
+                    'components' => $scheme->components,
+                    'saved' => $saved,
+                    'errorMessage' => $errorMessage,
+                ])->toJson();
+            }
+            Storage::delete($path);
+        }
     }
 
     /**
@@ -84,64 +121,47 @@ class CmsPluginController extends Controller
      */
     public function show(CmsPlugin $cmsPlugin)
     {
-//        return view('cms_plugin.show', [
-//            'app' => $cmsApplication,
-//        ]);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\CmsPlugin  $cmsPlugin
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(CmsPlugin $cmsPlugin)
-    {
-//        return view('cms_plugin.edit', [
-//            'app' => $cmsApplication,
-//        ]);
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\CmsPlugin  $cmsPlugin
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, CmsPlugin $cmsPlugin)
-    {
-//        $validatedData = $request->validate([
-//            'name' => [
-//                'required',
-//                'string',
-//                Rule::unique('cms_plugins')->ignore($request->user()->id, 'user_id'),
-//                'max:255',
-//            ],
-//            'url' => [
-//                'required',
-//                'url',
-//                Rule::unique('cms_plugins')->ignore($request->user()->id, 'user_id'),
-//                'max:255',
-//            ],
-//        ]);
-//
-//        $cmsApplication->fill($validatedData);
-//
-//        $cmsApplication->save();
-//
-//        return redirect()->route('cms-applications.index');
+        $apps = CmsApplication::where('user_id', Auth::user()->id)->get();
+        return view('cms_plugin.show', [
+            'plugin' => $cmsPlugin,
+            'apps' => $apps,
+        ]);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\CmsPlugin  $cmsPlugin
+     * @param  \App\CmsPlugin $cmsPlugin
      * @return \Illuminate\Http\Response
+     * @throws \Exception
      */
     public function destroy(CmsPlugin $cmsPlugin)
     {
-//        $cmsApplication->delete();
-//        return redirect()->route('cms-applications.index');
+        $cmsPlugin->delete();
+        return redirect()->route('cms-plugins.index');
+    }
+
+    public function getPluginLatestVersion(Request $request)
+    {
+        $vendor = $request->input('vendor');
+        $package = $request->input('package');
+
+        $sub_query = CmsPlugin::groupBy('vendor')->groupBy('package')->selectRaw('vendor, package, MAX(version) as last_version');
+        $plugin = CmsPlugin::joinSub($sub_query, 'sub_query', function ($join) {
+            $join->on('cms_plugins.vendor', '=', 'sub_query.vendor');
+            $join->on('cms_plugins.package', '=', 'sub_query.package');
+            $join->on('cms_plugins.version', '=', 'sub_query.last_version');
+        })->where([
+            ['cms_plugins.vendor', $vendor],
+            ['cms_plugins.package', $package],
+        ])->first();
+
+        $version = null;
+        if ($plugin) {
+            $version = $plugin->version;
+        }
+        return collect([
+            'version' => $version,
+        ])->toJson();
     }
 }

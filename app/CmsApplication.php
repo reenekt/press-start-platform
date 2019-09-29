@@ -9,6 +9,7 @@ class CmsApplication extends Model
     protected $fillable = [
         'name',
         'url',
+        'app_key',
     ];
 
     public function user()
