@@ -12,12 +12,18 @@
 */
 
 Route::get('/', function () {
+    if (\Illuminate\Support\Facades\Auth::check()) {
+        return redirect()->route('dashboard');
+    }
     return view('welcome');
 })->name('welcome');
 
 Auth::routes();
 
 Route::get('/dashboard', 'HomeController@index')->name('dashboard');
+
+Route::get('/profile', 'HomeController@profile')->name('profile');
+Route::post('/profile', 'HomeController@profileSave')->name('profile.save');
 
 Route::resource('cms-applications', 'CmsApplicationController');
 Route::get('cms-plugins/{cms_plugin}/download', 'CmsPluginController@download')->name('cms-plugins.download');
@@ -30,7 +36,10 @@ Route::get('work-in-progress', function () {
     return view('wip');
 })->name('work-in-progress');
 
-Route::get('qwe', function () {
+Route::get('dev', function () {
+    if (env('APP_ENV') != 'local') {
+        abort(401, 'Development only');
+    }
 //    dd(\App\CmsPlugin::where([
 //        ['vendor', 'PressStartOfficial'],
 //        ['package', 'ExampleOne'],

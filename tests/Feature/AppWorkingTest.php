@@ -5,14 +5,14 @@ namespace Tests\Feature;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class ExampleTest extends TestCase
+class AppWorkingTest extends TestCase
 {
     /**
-     * A basic test example.
+     * Тест доступности главной страницы сайта
      *
      * @return void
      */
-    public function testBasicTest()
+    public function testAppIsWorking()
     {
         $response = $this->get('/');
 

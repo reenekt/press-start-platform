@@ -22,19 +22,33 @@ class CmsPluginController extends Controller
     /**
      * Display a listing of the resource.
      *
+     * @param Request $request
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
+        $filter = $request->query('filter');
+        $filter_value = $request->query('value');
+
         $sub_query = CmsPlugin::groupBy('vendor')->groupBy('package')->selectRaw('vendor, package, MAX(version) as last_version');
-        $plugins = CmsPlugin::joinSub($sub_query, 'sub_query', function ($join) {
+        $plugins_query = CmsPlugin::joinSub($sub_query, 'sub_query', function ($join) {
             $join->on('cms_plugins.vendor', '=', 'sub_query.vendor');
             $join->on('cms_plugins.package', '=', 'sub_query.package');
             $join->on('cms_plugins.version', '=', 'sub_query.last_version');
-        })->get();
+        });
+
+        if ($filter && $filter_value) {
+            $plugins_query->where([
+                "cms_plugins.$filter" => $filter_value
+            ]);
+        }
+
+        $plugins = $plugins_query->get();
 
         return view('cms_plugin.index', [
-            'plugins' => $plugins
+            'plugins' => $plugins,
+            'filter' => $filter,
+            'filter_value' => $filter_value,
         ]);
     }
 
@@ -64,7 +78,13 @@ class CmsPluginController extends Controller
         if ($request->file('file')->getMimeType() == 'application/zip') {
             $zip = new ZipArchive();
             $path = $request->file('file')->store('temp/plugins');
-            if ($zip->open(storage_path('app/' . $path)) === true) {
+//            $file_path_prefix = env('APP_ENV') == 'testing' ? '' : 'app';
+            $file_path_prefix = 'app';
+            if (env('APP_ENV') == 'testing') {
+                $file_path_prefix = 'framework'.DIRECTORY_SEPARATOR.'testing'.DIRECTORY_SEPARATOR.'disks'.DIRECTORY_SEPARATOR.'local';
+            }
+            $file_path = storage_path($file_path_prefix . DIRECTORY_SEPARATOR . $path);
+            if ($zip->open($file_path) === true) {
                 $scheme = new PluginScheme($zip->getFromName('start.plugin.json'));
                 $scheme->package = explode('.', $request->file('file')->getClientOriginalName())[0];
                 $scheme->vendor = $request->user()->vendor_name;
@@ -108,8 +128,20 @@ class CmsPluginController extends Controller
                     'saved' => $saved,
                     'errorMessage' => $errorMessage,
                 ])->toJson();
+            } else {
+                return collect([
+                    'result' => false,
+                    'message'=> 'can\'t open zip archive',
+                    'path' => $path,
+                ])->toJson();
             }
             Storage::delete($path);
+        } else {
+            return collect([
+                'result' => false,
+                'message'=> 'wrong mime type',
+                'mime' => $request->file('file')->getMimeType(),
+            ])->toJson();
         }
     }
 

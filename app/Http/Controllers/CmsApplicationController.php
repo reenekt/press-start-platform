@@ -51,48 +51,50 @@ class CmsApplicationController extends Controller
         // region Проверка ключа приложния
         $url = $request->input('url');
         $url = rtrim($url,"/");
-        $client = new HttpClient();
-        $response = $client->post( $url . '/api/platform-connect', [
-            'headers' => [
-                'Accept' => 'application/json',
-            ],
-            'form_params' => [
-                'key' => $request->input('app_key')
-            ]
-        ]);
-        if ($response->getStatusCode() !== 200) {
-            $validator = Validator::make([
-                'app_key' => ''
-            ], [
-                'app_key' => [
-                    function ($attribute, $value, $fail) {
-                        $fail(__('Не удается проверить правильность ключа'));
-                    },
+        if (!empty($url)) {
+            $client = new HttpClient();
+            $response = $client->post( $url . '/api/platform-connect', [
+                'headers' => [
+                    'Accept' => 'application/json',
+                ],
+                'form_params' => [
+                    'key' => $request->input('app_key')
                 ]
             ]);
-            $validator->validate();
-            $validator->errors()->add('app_key', 'Не удается проверить правильность ключа');
-            return back()
-                ->withErrors($validator)
-                ->withInput();
-        }
-        $key_check_result = json_decode($response->getBody()->getContents(), true);
-        if ($key_check_result['result'] != true)
-        {
-            $validator = Validator::make([
-                'app_key' => ''
-            ], [
-                'app_key' => [
-                    function ($attribute, $value, $fail) {
-                        $fail(__('Неверный ключ CMS'));
-                    },
-                ]
-            ]);
-            $validator->validate();
-            $validator->errors()->add('app_key', 'Неверный ключ CMS');
-            return back()
-                ->withErrors($validator)
-                ->withInput();
+            if ($response->getStatusCode() !== 200) {
+                $validator = Validator::make([
+                    'app_key' => ''
+                ], [
+                    'app_key' => [
+                        function ($attribute, $value, $fail) {
+                            $fail(__('Не удается проверить правильность ключа'));
+                        },
+                    ]
+                ]);
+                $validator->validate();
+                $validator->errors()->add('app_key', 'Не удается проверить правильность ключа');
+                return back()
+                    ->withErrors($validator)
+                    ->withInput();
+            }
+            $key_check_result = json_decode($response->getBody()->getContents(), true);
+            if ($key_check_result['result'] != true)
+            {
+                $validator = Validator::make([
+                    'app_key' => ''
+                ], [
+                    'app_key' => [
+                        function ($attribute, $value, $fail) {
+                            $fail(__('Неверный ключ CMS'));
+                        },
+                    ]
+                ]);
+                $validator->validate();
+                $validator->errors()->add('app_key', 'Неверный ключ CMS');
+                return back()
+                    ->withErrors($validator)
+                    ->withInput();
+            }
         }
         // endregion
 
@@ -114,6 +116,12 @@ class CmsApplicationController extends Controller
                 'string',
                 'max:255',
             ],
+        ], [
+            'name.required' => 'Необходимо заполнить поле "Название"',
+            'url.required' => 'Необходимо заполнить поле "URL приложения"',
+            'app_key.required' => 'Необходимо заполнить поле "Ключ приложения"',
+            'name.unique' => 'CMS приложение с таким названием уже существует',
+            'url.unique' => 'CMS приложение с таким url уже существует',
         ]);
 
         $cmsApplication = new CmsApplication();
@@ -160,6 +168,56 @@ class CmsApplicationController extends Controller
      */
     public function update(Request $request, CmsApplication $cmsApplication)
     {
+        // region Проверка ключа приложния
+        $url = $request->input('url');
+        $url = rtrim($url,"/");
+        if (!empty($url)) {
+            $client = new HttpClient();
+            $response = $client->post( $url . '/api/platform-connect', [
+                'headers' => [
+                    'Accept' => 'application/json',
+                ],
+                'form_params' => [
+                    'key' => $request->input('app_key')
+                ]
+            ]);
+            if ($response->getStatusCode() !== 200) {
+                $validator = Validator::make([
+                    'app_key' => ''
+                ], [
+                    'app_key' => [
+                        function ($attribute, $value, $fail) {
+                            $fail(__('Не удается проверить правильность ключа'));
+                        },
+                    ]
+                ]);
+                $validator->validate();
+                $validator->errors()->add('app_key', 'Не удается проверить правильность ключа');
+                return back()
+                    ->withErrors($validator)
+                    ->withInput();
+            }
+            $key_check_result = json_decode($response->getBody()->getContents(), true);
+            if ($key_check_result['result'] != true)
+            {
+                $validator = Validator::make([
+                    'app_key' => ''
+                ], [
+                    'app_key' => [
+                        function ($attribute, $value, $fail) {
+                            $fail(__('Неверный ключ CMS'));
+                        },
+                    ]
+                ]);
+                $validator->validate();
+                $validator->errors()->add('app_key', 'Неверный ключ CMS');
+                return back()
+                    ->withErrors($validator)
+                    ->withInput();
+            }
+        }
+        // endregion
+
         $validatedData = $request->validate([
             'name' => [
                 'required',
@@ -171,6 +229,11 @@ class CmsApplicationController extends Controller
                 'required',
                 'url',
                 Rule::unique('cms_applications')->ignore($request->user()->id, 'user_id'),
+                'max:255',
+            ],
+            'app_key' => [
+                'required',
+                'string',
                 'max:255',
             ],
         ]);
