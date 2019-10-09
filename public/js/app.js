@@ -51488,7 +51488,6 @@ $(document).ready(function () {
       $this.parent().parent().parent().addClass('sidebar__nav-item_showing');
       $this.parent().parent().parent().addClass('sidebar__nav-item_showing');
       console.log($this.parent().parent().parent().attr('id'));
-      console.log($('a[href="#' + $this.parent().parent().parent().attr('id') + '"]'));
       $('a[href="#' + $this.parent().parent().parent().attr('id') + '"]').addClass('sidebar__nav-item_showing');
     }
   });
@@ -51518,14 +51517,26 @@ $(document).ready(function () {
 
 /***/ }),
 
+/***/ "./resources/sass/landing.scss":
+/*!*************************************!*\
+  !*** ./resources/sass/landing.scss ***!
+  \*************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+
 /***/ 0:
-/*!*************************************************************!*\
-  !*** multi ./resources/js/app.js ./resources/sass/app.scss ***!
-  \*************************************************************/
+/*!*******************************************************************************************!*\
+  !*** multi ./resources/js/app.js ./resources/sass/landing.scss ./resources/sass/app.scss ***!
+  \*******************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(/*! /home/vagrant/press-start-platform/resources/js/app.js */"./resources/js/app.js");
+__webpack_require__(/*! /home/vagrant/press-start-platform/resources/sass/landing.scss */"./resources/sass/landing.scss");
 module.exports = __webpack_require__(/*! /home/vagrant/press-start-platform/resources/sass/app.scss */"./resources/sass/app.scss");
 
 

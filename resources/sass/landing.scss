@@ -1,0 +1,30 @@
+.landing-top {
+  width: 100%;
+  min-height: 800px;
+  background: url("../images/landing-top-bg.jpg") no-repeat;
+  background-size: cover;
+  display: flex;
+  align-self: stretch;
+
+  // landing-top-header
+  &-header {
+    font-size: 64px;
+  }
+
+  // landing-top-text
+  &-text {
+    font-size: 20px;
+  }
+
+  & > .top-container {
+    position: relative;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.7);
+  }
+}
+
+.instagram-gradient::before {
+  background: linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
