@@ -1,10 +1,9 @@
 # Press Start Platform
-Cloud service for interacting with Press Start CMS
+Cloud service for interacting with [Press Start CMS](https://github.com/reenekt/press-start-cms)
 
 ## Table of contents
 * [Features](#Features)
 * [Installation](#Installation)
-* [TODO list](#TODO-list)
 
 ## Features
 For users:  
