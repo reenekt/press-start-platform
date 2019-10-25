@@ -52,7 +52,13 @@ class CmsApplicationController extends Controller
         $url = $request->input('url');
         $url = rtrim($url,"/");
         if (!empty($url)) {
-            $client = new HttpClient();
+            $verify = true;
+            if (env('APP_ENV') == 'local' || env('APP_ENV') == 'testing') {
+                $verify = false;
+            }
+            $client = new HttpClient([
+                'verify' => $verify,
+            ]);
             $response = $client->post( $url . '/api/platform-connect', [
                 'headers' => [
                     'Accept' => 'application/json',

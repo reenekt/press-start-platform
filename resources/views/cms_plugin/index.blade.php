@@ -1,6 +1,92 @@
 @extends('layouts.app')
 
 @section('content')
+    <v-container
+        fluid
+    >
+        <v-row>
+            <v-col
+                cols="12"
+            >
+                <cms-plugins-data-table
+                        plugins-base-url="{{ route('cms-plugins.index') }}"
+                        plugins-api-url="{{ route('api.cms-plugins') }}"
+                        {{--plugins-base-url="http://press-start-platform.test/cms-plugins"--}}
+                        {{--plugins-api-url="http://press-start-platform.test/api/cms-plugins"--}}
+                ></cms-plugins-data-table>
+
+                {{--<v-btn--}}
+                        {{--color="green"--}}
+                        {{--dark--}}
+                        {{--absolute--}}
+                        {{--bottom--}}
+                        {{--right--}}
+                        {{--fab--}}
+                        {{--x-large--}}
+                        {{--class="mb-12 mr-4"--}}
+                        {{--href="{{ route('cms-plugins.upload') }}"--}}
+                {{-->--}}
+                    {{--<v-icon>mdi-plus</v-icon>--}}
+                {{--</v-btn>--}}
+
+                <plugin-uploader-modal
+                        store-url="{{ route('cms-plugins.store') }}"
+                ></plugin-uploader-modal>
+
+                {{--<v-dialog--}}
+                        {{--v-model="dialog"--}}
+                        {{--width="500"--}}
+                {{-->--}}
+                    {{--<template v-slot:activator="{ on }">--}}
+                        {{--<v-btn--}}
+                                {{--color="green"--}}
+                                {{--dark--}}
+                                {{--absolute--}}
+                                {{--bottom--}}
+                                {{--right--}}
+                                {{--fab--}}
+                                {{--x-large--}}
+                                {{--class="mb-12 mr-4"--}}
+                                {{--v-on="on"--}}
+                        {{-->--}}
+                            {{--<v-icon>mdi-plus</v-icon>--}}
+                        {{--</v-btn>--}}
+                    {{--</template>--}}
+
+                    {{--<v-card>--}}
+                        {{--<v-toolbar--}}
+                                {{--color="primary"--}}
+                                {{--dark--}}
+                                {{--class="mb-4"--}}
+                        {{-->--}}
+                            {{--<v-spacer></v-spacer>--}}
+                            {{--<v-toolbar-title>Загрузка плагина</v-toolbar-title>--}}
+                            {{--<v-spacer></v-spacer>--}}
+                        {{--</v-toolbar>--}}
+
+                        {{--<v-card-text>--}}
+                            {{--<plugin-zip-uploader submit-url="{{ route('cms-plugins.store') }}"></plugin-zip-uploader>--}}
+                        {{--</v-card-text>--}}
+
+                        {{--<v-divider></v-divider>--}}
+
+                        {{--<v-card-actions>--}}
+                            {{--<v-spacer></v-spacer>--}}
+                            {{--<v-btn--}}
+                                    {{--color="primary"--}}
+                                    {{--text--}}
+                                    {{--@click="dialog = false"--}}
+                            {{-->--}}
+                                {{--I accept--}}
+                            {{--</v-btn>--}}
+                        {{--</v-card-actions>--}}
+                    {{--</v-card>--}}
+                {{--</v-dialog>--}}
+            </v-col>
+        </v-row>
+    </v-container>
+
+    {{--
 <div class="container">
     <div class="row py-2">
         <div class="col-12">
@@ -45,7 +131,7 @@
                         <td>{{ $plugin->package }}</td>
                         <td>{{ $plugin->version }}</td>
                         <td>
-                            <a class="btn btn-primary" {{--target="_blank"--}} href="{{ route('cms-plugins.show', ['cms_plugin' => $plugin->id]) }}">Установить</a>
+                            <a class="btn btn-primary" href="{{ route('cms-plugins.show', ['cms_plugin' => $plugin->id]) }}">Установить</a>
                             <a class="btn btn-light" target="_blank" href="{{ route('cms-plugins.download', ['cms_plugin' => $plugin->id]) }}">Скачать (zip)</a>
                         </td>
                     </tr>
@@ -60,4 +146,5 @@
         </div>
     </div>
 </div>
+                    --}}
 @endsection

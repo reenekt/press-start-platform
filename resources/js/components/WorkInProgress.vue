@@ -1,28 +1,29 @@
 <template>
-    <div class="d-flex justify-content-center align-content-center w-100">
-        <h1 class="d-flex flex-column justify-content-center align-content-center">
-            <mdi-alert :fillColor="color" :size="size"></mdi-alert>
-            <span>
-                    В разработке
-                </span>
-        </h1>
-    </div>
+    <v-container fluid class="fill-height">
+        <v-row
+            justify="center"
+            align="center"
+        >
+            <h1 class="d-flex flex-column justify-content-center align-content-center">
+                <v-icon color="orange" x-large>mdi-alert</v-icon>
+                <span>
+                В разработке
+            </span>
+            </h1>
+        </v-row>
+    </v-container>
 </template>
 
 <script>
-    import mdiAlert from 'vue-material-design-icons/Alert'
+    import {
+        VIcon,
+    } from 'vuetify/lib'
 
     export default {
         name: "WorkInProgress",
         components: {
-            mdiAlert
+            VIcon,
         },
-        data() {
-            return {
-                size: 48,
-                color: '#dbd02c'
-            }
-        }
     }
 </script>
 

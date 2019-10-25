@@ -6,6 +6,10 @@ Cloud service for interacting with [Press Start CMS](https://github.com/reenekt/
 * [Installation](#Installation)
 
 ## Features
+Common:
+* Material design (powered by Vuetify)
+* PWA
+
 For users:  
 * Monitoring state of your CMS applications
 * Installing plugins in your applications through the platform

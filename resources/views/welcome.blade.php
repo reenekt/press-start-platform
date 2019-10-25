@@ -10,15 +10,22 @@
         <title>{{ config('app.name', 'Laravel') }}</title>
 
         <!-- Scripts -->
-        <script src="{{ asset('js/app.js') }}" defer></script>
+        @if(env('APP_ENV') !== 'local')
+            <script src="{{ secure_asset('js/landing.min.js') }}" defer></script>
+        @else
+            <script src="{{ secure_asset('js/landing.js') }}" defer></script>
+        @endif
 
         <!-- Fonts -->
         <link rel="dns-prefetch" href="//fonts.gstatic.com">
         <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
 
         <!-- Styles -->
-        <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-        <link href="{{ asset('css/landing.css') }}" rel="stylesheet">
+        @if(env('APP_ENV') !== 'local')
+            <link href="{{ secure_asset('css/landing.min.css') }}" rel="stylesheet">
+        @else
+            <link href="{{ secure_asset('css/landing.css') }}" rel="stylesheet">
+        @endif
     </head>
     <body>
         <div id="app">

@@ -84,7 +84,7 @@ class CmsPluginController extends Controller
                 $file_path_prefix = 'framework'.DIRECTORY_SEPARATOR.'testing'.DIRECTORY_SEPARATOR.'disks'.DIRECTORY_SEPARATOR.'local';
             }
             $file_path = storage_path($file_path_prefix . DIRECTORY_SEPARATOR . $path);
-            if ($zip->open($file_path) === true) {
+            if ($zip->open($file_path) === true && $zip->getFromName('start.plugin.json') !== false) {
                 $scheme = new PluginScheme($zip->getFromName('start.plugin.json'));
                 $scheme->package = explode('.', $request->file('file')->getClientOriginalName())[0];
                 $scheme->vendor = $request->user()->vendor_name;

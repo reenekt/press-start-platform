@@ -1,22 +1,60 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-12">
-            <h1>{{ $plugin->package }}</h1>
-            <h4>{{ $plugin->vendor }}</h4>
-            <h5>Последняя версия: {{ $plugin->version }}</h5>
-        </div>
-    </div>
-    <hr>
-    <div class="row">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-body">
-                    <div class="row">
-                        @foreach($apps as $app)
-                            <div class="col-4">
+    <v-container
+            fluid
+    >
+        <v-row
+                align="start"
+                justify="center"
+        >
+            <v-col
+                    cols="12"
+            >
+                <h1>{{ $plugin->package }}</h1>
+                <h4>{{ $plugin->vendor }}</h4>
+                <h5>
+                    Последняя версия: {{ $plugin->version }}
+                </h5>
+            </v-col>
+        </v-row>
+        <v-row
+                align="start"
+                justify="start"
+        >
+            <v-col
+                    cols="12"
+                    md="4"
+            >
+                @foreach($apps as $app)
+                    <install-plugin-card app-name="{{ $app->name }}"
+                                         app-url="{{ $app->url }}"
+                                         latest-version="{{ $plugin->version }}"
+                                         plugin-vendor="{{ $plugin->vendor }}"
+                                         plugin-package="{{ $plugin->package }}"
+                                         app-key="{{ $app->app_key }}"
+                    ></install-plugin-card>
+                @endforeach
+            </v-col>
+        </v-row>
+    </v-container>
+
+{{--<div class="container">--}}
+    {{--<div class="row justify-content-center">--}}
+        {{--<div class="col-12">--}}
+            {{--<h1>{{ $plugin->package }}</h1>--}}
+            {{--<h4>{{ $plugin->vendor }}</h4>--}}
+            {{--<h5>Последняя версия: {{ $plugin->version }}</h5>--}}
+        {{--</div>--}}
+    {{--</div>--}}
+    {{--<hr>--}}
+    {{--<div class="row">--}}
+        {{--<div class="col-12">--}}
+            {{--<div class="card">--}}
+                {{--<div class="card-body">--}}
+                    {{--<div class="row">--}}
+                        {{--@foreach($apps as $app)--}}
+                            {{--<div class="col-4">--}}
                                 {{--<div class="card">--}}
                                     {{--<div class="card-body">--}}
                                         {{--<h5 class="card-title">{{ $app->name }}</h5>--}}
@@ -51,19 +89,19 @@
                                     {{--</div>--}}
                                 {{--</div>--}}
 
-                                <install-plugin-card app-name="{{ $app->name }}"
-                                                     app-url="{{ $app->url }}"
-                                                     latest-version="{{ $plugin->version }}"
-                                                     plugin-vendor="{{ $plugin->vendor }}"
-                                                     plugin-package="{{ $plugin->package }}"
-                                                     app-key="{{ $app->app_key }}"
-                                ></install-plugin-card>
-                            </div>
-                        @endforeach
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+                                {{--<install-plugin-card app-name="{{ $app->name }}"--}}
+                                                     {{--app-url="{{ $app->url }}"--}}
+                                                     {{--latest-version="{{ $plugin->version }}"--}}
+                                                     {{--plugin-vendor="{{ $plugin->vendor }}"--}}
+                                                     {{--plugin-package="{{ $plugin->package }}"--}}
+                                                     {{--app-key="{{ $app->app_key }}"--}}
+                                {{--></install-plugin-card>--}}
+                            {{--</div>--}}
+                        {{--@endforeach--}}
+                    {{--</div>--}}
+                {{--</div>--}}
+            {{--</div>--}}
+        {{--</div>--}}
+    {{--</div>--}}
+{{--</div>--}}
 @endsection

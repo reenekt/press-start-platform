@@ -1,16 +1,24 @@
 <template>
     <div>
-        <div v-if="loading">
-            <span style="font-size: 1rem;" class="badge badge-secondary">Загрузка...</span></div>
-        <div v-else>
-            <span style="font-size: 1rem;" :class="statusElementClass">{{ status }}</span>
-        </div>
+        <v-chip v-if="loading" class="my-1">
+            Загрузка...
+        </v-chip>
+        <v-chip v-else dark :color="statusElementClass" class="my-1">
+            {{ status }}
+        </v-chip>
     </div>
 </template>
 
 <script>
+    import {
+        VChip,
+    } from 'vuetify/lib'
+
     export default {
         name: "CmsAppStatus",
+        components: {
+            VChip
+        },
         data() {
             return {
                 loading: true,
@@ -32,11 +40,11 @@
         computed: {
             statusElementClass () {
                 if (this.statusType === 'active') {
-                    return 'badge badge-success'
+                    return 'green'
                 } else if (this.statusType === 'warning') {
-                    return 'badge badge-warning'
+                    return 'orange'
                 } else {
-                    return 'badge badge-danger'
+                    return 'red'
                 }
             }
         },

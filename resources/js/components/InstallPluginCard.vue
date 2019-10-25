@@ -1,48 +1,129 @@
 <template>
-    <div class="card">
-        <div class="card-body">
-            <h5 class="card-title">{{ appName }}</h5>
-            <h5 class="card-subtitle">
+    <!--<v-skeleton-loader-->
+            <!--:loading="true"-->
+            <!--transition="scale-transition"-->
+            <!--height="94"-->
+            <!--type="card, list-item-two-line"-->
+            <!--boilerplate-->
+    <!--&gt;-->
+        <v-card
+            :loading="(loading ? 'primary' : false)"
+        >
+            <v-card-title>
+                {{ appName }}
+            </v-card-title>
+            <v-card-text>
                 <a :href="appUrl">{{ appUrl }}</a>
-            </h5>
-
+            </v-card-text>
             <div v-if="loading">
-                Загрузка...
+                <v-card-text class="text-center">
+                    Загрузка...
+                </v-card-text>
             </div>
             <div v-else>
                 <div v-if="!plugin || !plugin.scheme.scheme.version">
-                    <p class="card-text">
+                    <v-card-text>
                         Плагин не установлен в CMS
-                    </p>
-                    <div class="mt-3 d-flex justify-content-center">
-                        <button @click="installPlugin" type="button" class="btn btn-primary">Установить</button>
-                    </div>
+                    </v-card-text>
+                    <v-card-actions class="mt-3 d-flex justify-center">
+                        <v-btn
+                                color="primary"
+                                @click="installPlugin"
+                        >
+                            Установить
+                        </v-btn>
+                    </v-card-actions>
                 </div>
 
                 <div v-else-if="plugin.scheme.scheme.version && plugin.scheme.scheme.version < latestVersion">
-                    <p class="card-text">
-                        Текущая версия <span class="badge badge-pill badge-warning">{{ plugin.scheme.scheme.version }}</span><br>
-                        Есть более новая версия <span class="badge badge-pill badge-success">{{ latestVersion }}</span>
-                    </p>
-                    <div class="mt-3 d-flex justify-content-center">
-                        <button @click="updatePlugin" type="button" class="btn btn-primary">Обновить</button>
-                    </div>
+                    <v-card-text>
+                        Текущая версия <v-chip color="orange">{{ plugin.scheme.scheme.version }}</v-chip><br>
+                        Есть более новая версия <v-chip color="green">{{ latestVersion }}</v-chip>
+                    </v-card-text>
+                    <v-card-actions class="mt-3 d-flex justify-center">
+                        <v-btn
+                                color="primary"
+                                @click="updatePlugin"
+                        >
+                            Обновить
+                        </v-btn>
+                    </v-card-actions>
                 </div>
 
                 <div v-else>
-                    <p class="card-text">
-                        Установлена самая новая версия <span class="badge badge-pill badge-success">{{ latestVersion }}</span>
-                    </p>
+                    <v-card-text>
+                        Установлена самая новая версия <v-chip dark color="green">{{ latestVersion }}</v-chip>
+                    </v-card-text>
                 </div>
             </div>
-        </div>
-        <!--<button @click="reloadData" class="btn btn-info" type="button">reload</button>-->
-    </div>
+        </v-card>
+    <!--</v-skeleton-loader>-->
+
+
+    <!--<div class="card">-->
+        <!--<div class="card-body">-->
+            <!--<h5 class="card-title">{{ appName }}</h5>-->
+            <!--<h5 class="card-subtitle">-->
+                <!--<a :href="appUrl">{{ appUrl }}</a>-->
+            <!--</h5>-->
+
+            <!--<div v-if="loading">-->
+                <!--Загрузка...-->
+            <!--</div>-->
+            <!--<div v-else>-->
+                <!--<div v-if="!plugin || !plugin.scheme.scheme.version">-->
+                    <!--<p class="card-text">-->
+                        <!--Плагин не установлен в CMS-->
+                    <!--</p>-->
+                    <!--<div class="mt-3 d-flex justify-content-center">-->
+                        <!--<button @click="installPlugin" type="button" class="btn btn-primary">Установить</button>-->
+                    <!--</div>-->
+                <!--</div>-->
+
+                <!--<div v-else-if="plugin.scheme.scheme.version && plugin.scheme.scheme.version < latestVersion">-->
+                    <!--<p class="card-text">-->
+                        <!--Текущая версия <span class="badge badge-pill badge-warning">{{ plugin.scheme.scheme.version }}</span><br>-->
+                        <!--Есть более новая версия <span class="badge badge-pill badge-success">{{ latestVersion }}</span>-->
+                    <!--</p>-->
+                    <!--<div class="mt-3 d-flex justify-content-center">-->
+                        <!--<button @click="updatePlugin" type="button" class="btn btn-primary">Обновить</button>-->
+                    <!--</div>-->
+                <!--</div>-->
+
+                <!--<div v-else>-->
+                    <!--<p class="card-text">-->
+                        <!--Установлена самая новая версия <span class="badge badge-pill badge-success">{{ latestVersion }}</span>-->
+                    <!--</p>-->
+                <!--</div>-->
+            <!--</div>-->
+        <!--</div>-->
+        <!--&lt;!&ndash;<button @click="reloadData" class="btn btn-info" type="button">reload</button>&ndash;&gt;-->
+    <!--</div>-->
 </template>
 
 <script>
+    import {
+        VCard,
+        VCardTitle,
+        VCardText,
+        VBtn,
+        VCardActions,
+        VChip,
+    } from 'vuetify/lib'
+
+    import {VSkeletonLoader} from 'vuetify/lib/components'
+
     export default {
         name: "InstallPluginCard",
+        components: {
+            VCard,
+            VCardTitle,
+            VCardText,
+            VBtn,
+            VCardActions,
+            VChip,
+            VSkeletonLoader,
+        },
         data () {
             return {
                 loading: true,
