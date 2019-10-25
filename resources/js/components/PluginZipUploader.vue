@@ -1,52 +1,106 @@
 <template>
     <div>
         <div v-if="!uploaded">
-            <div class="form-group">
-                <div class="custom-file">
-                    <input type="file" ref="file" @change="fileChange" :class="'custom-file-input ' + formValidationClass" id="customFile">
-                    <label class="custom-file-label" for="customFile" data-browse="Выбрать">Выберите файл (zip архив)</label>
-                </div>
-            </div>
-            <div class="form-group" v-if="!autoSubmit">
-                <button type="button" :disaled="isFileZip">Загрузить</button>
-            </div>
+            <v-file-input
+                    label="Плагин"
+                    accept="application/zip,application/octet-stream,application/x-zip-compressed,multipart/x-zip"
+                    hint="Выберите файл (zip архив)"
+                    persistent-hint
+                    @change="fileChange"
+            ></v-file-input>
+
+            <!--<div class="form-group">-->
+                <!--<div class="custom-file">-->
+                    <!--<input type="file" ref="file" @change="fileChange" :class="'custom-file-input ' + formValidationClass" id="customFile">-->
+                    <!--<label class="custom-file-label" for="customFile" data-browse="Выбрать">Выберите файл (zip архив)</label>-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="form-group" v-if="!autoSubmit">-->
+                <!--<button type="button" :disaled="isFileZip">Загрузить</button>-->
+            <!--</div>-->
         </div>
         <div v-if="uploaded">
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item">
+            <v-card>
+                <v-card-text class="title">
                     Вендор: <b>{{ responseInfo.vendor }}</b>
-                </li>
-                <li class="list-group-item">
+                    <v-divider class="my-3"></v-divider>
                     Пакет (плагин): <b>{{ responseInfo.package }}</b>
-                </li>
-                <li class="list-group-item">
+                    <v-divider class="my-3"></v-divider>
                     Версия: <b>{{ responseInfo.version }}</b>
-                </li>
-                <li class="list-group-item">
+                    <v-divider class="my-3"></v-divider>
                     Проверка схемы плагина:
-                    <span :class="'badge ' + (responseInfo.valid ? 'badge-success' : 'badge-danger')">
+                    <v-chip dark :color="(responseInfo.valid ? 'green' : 'red')">
                         {{ responseInfo.valid ? 'Схема правильная' : 'Ошибка схемы плагина' }}
-                    </span>
-                </li>
-                <li class="list-group-item">
-                    <b :class="responseInfo.saved ? 'text-success' : 'text-danger'">
+                    </v-chip>
+                    <v-divider class="my-3"></v-divider>
+                    <v-chip dark :color="(responseInfo.saved ? 'green' : 'red')">
                         {{ responseInfo.saved ? 'Сохранен' : 'Не сохранен' }}
-                    </b>
-                </li>
-                <li v-if="responseInfo.errorMessage" class="list-group-item">
-                    <div class="text-danger">
+                    </v-chip>
+                    <div v-if="responseInfo.errorMessage" class="red--text darken-3">
                         Ошибка: {{ responseInfo.errorMessage }}
                     </div>
-                </li>
-            </ul>
-            <button @click="addNewPlugin" class="mt-3 btn btn-primary" type="button">Загрузить новый плагин</button>
+                </v-card-text>
+                <v-card-actions>
+                    <v-btn class="mt-3" color="primary" @click="addNewPlugin">
+                        Загрузить новый плагин
+                    </v-btn>
+                </v-card-actions>
+            </v-card>
+            <!--<ul class="list-group list-group-flush">-->
+                <!--<li class="list-group-item">-->
+                    <!--Вендор: <b>{{ responseInfo.vendor }}</b>-->
+                <!--</li>-->
+                <!--<li class="list-group-item">-->
+                    <!--Пакет (плагин): <b>{{ responseInfo.package }}</b>-->
+                <!--</li>-->
+                <!--<li class="list-group-item">-->
+                    <!--Версия: <b>{{ responseInfo.version }}</b>-->
+                <!--</li>-->
+                <!--<li class="list-group-item">-->
+                    <!--Проверка схемы плагина:-->
+                    <!--<span :class="'badge ' + (responseInfo.valid ? 'badge-success' : 'badge-danger')">-->
+                        <!--{{ responseInfo.valid ? 'Схема правильная' : 'Ошибка схемы плагина' }}-->
+                    <!--</span>-->
+                <!--</li>-->
+                <!--<li class="list-group-item">-->
+                    <!--<b :class="responseInfo.saved ? 'text-success' : 'text-danger'">-->
+                        <!--{{ responseInfo.saved ? 'Сохранен' : 'Не сохранен' }}-->
+                    <!--</b>-->
+                <!--</li>-->
+                <!--<li v-if="responseInfo.errorMessage" class="list-group-item">-->
+                    <!--<div class="text-danger">-->
+                        <!--Ошибка: {{ responseInfo.errorMessage }}-->
+                    <!--</div>-->
+                <!--</li>-->
+            <!--</ul>-->
+            <!--<button @click="addNewPlugin" class="mt-3 btn btn-primary" type="button">Загрузить новый плагин</button>-->
         </div>
     </div>
 </template>
 
 <script>
+    import {
+        VFileInput,
+        VCard,
+        VCardText,
+        VChip,
+        VDivider,
+        VCardActions,
+        VBtn,
+    } from 'vuetify/lib'
+    import axios from 'axios'
+
     export default {
         name: "PluginZipUploader",
+        components: {
+            VFileInput,
+            VCard,
+            VCardText,
+            VChip,
+            VDivider,
+            VCardActions,
+            VBtn,
+        },
         data() {
             return {
                 zipMimeTypes: [
@@ -100,8 +154,8 @@
             }
         },
         methods: {
-            fileChange () {
-                this.file = this.$refs.file.files[0];
+            fileChange (file) {
+                this.file = file;
                 if (this.autoSubmit) {
                     this.submitFile()
                 }

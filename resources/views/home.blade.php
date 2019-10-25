@@ -1,32 +1,44 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
-    <div class="row">
-        <div class="col-12 col-md-4">
-            <div class="card text-white bg-primary">
-                <div class="card-body">
-                    <h3 class="card-title">
+    <v-container
+            {{--class="fill-height"--}}
+            fluid
+    >
+        <v-row
+                align="start"
+                justify="center"
+        >
+            <v-col
+                    cols="12"
+                    md="4"
+            >
+                <v-card
+                    color="blue darken-1"
+                    dark
+                >
+                    <v-card-title>
                         CMS приложения
-                    </h3>
-                    <div class="card-text">
+                    </v-card-title>
+                    <v-card-text>
                         Подключено к платформе: {{ $apps->count() }}
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-12 col-md-4">
-            <div class="card">
-                <div class="card-body">
-                    <h3 class="card-title">
+                    </v-card-text>
+                </v-card>
+            </v-col>
+
+            <v-col
+                    cols="12"
+                    md="4"
+            >
+                <v-card>
+                    <v-card-title>
                         Плагины
-                    </h3>
-                    <div class="card-text">
+                    </v-card-title>
+                    <v-card-text>
                         Создано: {{ $plugins->count() }}
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+                    </v-card-text>
+                </v-card>
+            </v-col>
+        </v-row>
+    </v-container>
 @endsection

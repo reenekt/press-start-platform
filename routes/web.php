@@ -11,8 +11,8 @@
 |
 */
 
-Route::get('/', function () {
-    if (\Illuminate\Support\Facades\Auth::check()) {
+Route::get('/', function (\Illuminate\Http\Request $request) {
+    if (\Illuminate\Support\Facades\Auth::check() || $request->query('source') == 'pwa') {
         return redirect()->route('dashboard');
     }
     return view('welcome');

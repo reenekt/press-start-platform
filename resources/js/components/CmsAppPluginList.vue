@@ -1,31 +1,46 @@
 <template>
-    <div class="row">
-        <div v-if="loading">Загрузка...</div>
-
-        <cms-app-plugin-card v-for="(plugin, index) in plugins" :key="'plugin_card_' + index"
-                             :scheme="plugin.scheme"
-                             :invalid="plugin.invalid"
-                             :app-key="appKey"
-                             :cms-app-url="cmsAppUrl"
-                             @change="retry"
-        ></cms-app-plugin-card>
-
-        <div v-if="errorStatus">
-        <span>
-            Ошибка при загрузке данных о плагинах.
-        </span>
-            <button @click="retry" class="btn btn-info" type="button">Повторить попытку</button>
-        </div>
-    </div>
+    <v-container
+            fluid
+    >
+        <v-row
+                align="start"
+                justify="center"
+        >
+            <div v-if="loading">Загрузка...</div>
+            <cms-app-plugin-card v-for="(plugin, index) in plugins" :key="'plugin_card_' + index"
+                                 :scheme="plugin.scheme"
+                                 :invalid="plugin.invalid"
+                                 :app-key="appKey"
+                                 :cms-app-url="cmsAppUrl"
+                                 @change="retry"
+            ></cms-app-plugin-card>
+            <div v-if="errorStatus">
+                    <span>
+                        Ошибка при загрузке данных о плагинах.
+                    </span>
+                <v-btn color="info" @click="retry" class="my-1" type="button">Повторить попытку</v-btn>
+            </div>
+        </v-row>
+    </v-container>
 </template>
 
 <script>
     import CmsAppPluginCard from './CmsAppPluginCard'
+    import {
+        VContainer,
+        VRow,
+        VCol,
+        VBtn,
+    } from 'vuetify/lib'
 
     export default {
         name: "CmsAppPluginList",
         components: {
-            CmsAppPluginCard
+            CmsAppPluginCard,
+            VContainer,
+            VRow,
+            VCol,
+            VBtn,
         },
         data () {
             return {

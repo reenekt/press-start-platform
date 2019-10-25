@@ -1,36 +1,63 @@
 <template>
-    <div class="col-4 pb-3">
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">{{ scheme.package }}</h5>
-                <h6 class="card-subtitle">{{ scheme.vendor }}</h6>
-                <p class="card-text">
-                    <span v-if="invalid" class="badge badge-danger">Ошибка работы</span>
-                    <span v-else class="badge badge-success">Работает</span>
-                </p>
-            </div>
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item">
-                    {{ scheme.scheme.version }}<br>
-                    <div v-if="newerVersionExist">Есть более новая версия: <span class="badge badge-pill badge-success">{{ latestVersion }}</span></div>
-                </li>
-            </ul>
-            <div class="card-body">
-                <div v-if="loading">
-                    Загрузка...
-                </div>
-                <div v-else>
-                    <button v-if="newerVersionExist" @click="updatePlugin" class="btn btn-primary" type="button">Обновить</button>
-                    <button @click="deletePlugin" class="btn btn-danger" type="button">Удалить</button>
-                </div>
-            </div>
-        </div>
-    </div>
+    <v-col
+        cols="12"
+        md="4"
+    >
+        <v-card>
+            <v-card-title>
+                {{ scheme.package }}
+            </v-card-title>
+            <v-card-text>
+                {{ scheme.vendor }}
+            </v-card-text>
+            <v-card-text>
+                <v-chip dark color="red" v-if="invalid">
+                    Ошибка работы
+                </v-chip>
+                <v-chip dark color="green" v-else>
+                    Работает
+                </v-chip>
+
+                <v-divider class="mx-2 my-2"></v-divider>
+
+                {{ scheme.scheme.version }}<br>
+                <div v-if="newerVersionExist">Есть более новая версия: <span class="badge badge-pill badge-success">{{ latestVersion }}</span></div>
+
+                <v-divider class="mx-2 my-2"></v-divider>
+
+                <v-card-actions>
+                    <v-btn v-if="newerVersionExist" @click="updatePlugin" color="primary">Обновить</v-btn>
+                    <v-btn dark @click="deletePlugin" color="red">Удалить</v-btn>
+                </v-card-actions>
+            </v-card-text>
+        </v-card>
+    </v-col>
 </template>
 
 <script>
+    import {
+        VCol,
+        VCard,
+        VCardTitle,
+        VCardText,
+        VChip,
+        VDivider,
+        VCardActions,
+        VBtn,
+    } from 'vuetify/lib'
+
     export default {
         name: "CmsAppPluginCard",
+        components: {
+            VCol,
+            VCard,
+            VCardTitle,
+            VCardText,
+            VChip,
+            VDivider,
+            VCardActions,
+            VBtn,
+        },
         data () {
             return {
                 loading: true,

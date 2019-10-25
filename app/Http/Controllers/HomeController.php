@@ -7,6 +7,7 @@ use App\CmsPlugin;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class HomeController extends Controller
 {
@@ -56,6 +57,11 @@ class HomeController extends Controller
     {
         /** @var User $user */
         $user = Auth::user();
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+        ]);
         $user->fill($request->all());
         $saveResult = $user->save();
         if (!$request->expectsJson()) {
