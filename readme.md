@@ -1,4 +1,6 @@
 # Press Start Platform
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/reenekt/press-start-platform)
+
 Cloud service for interacting with [Press Start CMS](https://github.com/reenekt/press-start-cms)
 
 ## Table of contents
